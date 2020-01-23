@@ -1,7 +1,7 @@
 NAME	= ft_printf
 
 # src / obj files
-SRC		=	ft_printf.c\
+SRC		=	ft_printf.c c_type.c\
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
