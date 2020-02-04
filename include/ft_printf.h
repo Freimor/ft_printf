@@ -14,16 +14,19 @@ typedef struct	s_printf
 	int			fd;
 	va_list		list;
 	int 		anker;
-	t_modlayer	currentmod;
+	t_modlayer	mod;
 }				t_printf;
 
 typedef struct	s_modlayer
 {
 	int			error;
+	char		*flag;
+	int			remove_0;
 	char		type;
 	int			size;
 	int			field_len;
 	int			precision;
+	int			precision_zero;
 	char		orientation;
 	char		zeromod;
 	char		sharp;
@@ -33,5 +36,6 @@ typedef struct	s_modlayer
 }				t_modlayer;
 
 int				c_type(t_modlayer mod, t_printf work);
+void			init_structure(t_printf work, char *format);
 
 #endif // !FT_PRINTF_H

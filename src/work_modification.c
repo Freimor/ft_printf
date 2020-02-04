@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   make_modification.c                                :+:      :+:    :+:   */
+/*   work_modification.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sskinner <sskinner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/23 13:38:40 by sskinner          #+#    #+#             */
-/*   Updated: 2020/01/23 13:40:04 by sskinner         ###   ########.fr       */
+/*   Updated: 2020/01/23 15:11:01 by sskinner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int		detect_modification(t_printf work)
+int		feel_modification(t_printf work)
 {
 	t_modlayer mod;
 
@@ -41,4 +41,19 @@ int		detect_modification(t_printf work)
 int		mod_update(t_printf work)
 {
 	//проверить на допустимые формату спецификаторы
+}
+
+int		interative_mod(t_printf work)
+{
+	while (chtoto)
+	{
+		if (work.format[work.anker] == '*')
+		{
+			if (shirina ne sushestvuet)
+				work.currentmod.size = va_arg;
+			else
+				work.currentmod.precision = va_arg
+		}
+		if (work.format[work.anker] == '0')
+	}
 }
