@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strclr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 03:22:29 by pbondoer          #+#    #+#             */
-/*   Updated: 2015/12/02 18:59:41 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/09/11 14:59:02 by atammie           #+#    #+#             */
+/*   Updated: 2019/09/19 13:29:37 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-void	ft_strclr(char *as)
+#include "libft.h"
+
+void	ft_strclr(char *s)
 {
-	while (*as)
-	{
-		*as = 0;
-		as++;
-	}
+	if (s)
+		ft_bzero((void*)s, ft_strlen(s));
 }

@@ -3,32 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 17:21:32 by pbondoer          #+#    #+#             */
-/*   Updated: 2015/12/04 03:11:38 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/09/13 15:46:52 by atammie           #+#    #+#             */
+/*   Updated: 2019/09/20 17:19:59 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <string.h>
 
-char	*ft_strtrim(char const *s)
+char	*ft_strtrim(const char *s)
 {
-	size_t	start;
-	size_t	end;
-	char	*new;
+	unsigned char	*str;
+	unsigned char	*f;
+	size_t			size;
+	size_t			sp;
 
-	start = 0;
-	end = ft_strlen(s);
-	while (ft_iswhitespace(s[start]))
-		start++;
-	while (ft_iswhitespace(s[end - 1]))
-		end--;
-	if (end < start)
-		end = start;
-	new = ft_strnew(end - start);
-	if (new == NULL)
+	if (!s)
 		return (NULL);
-	return (ft_strncpy(new, s + start, end - start));
+	sp = 0;
+	size = ft_strlen(s);
+	while (s[sp] == '\t' || s[sp] == '\n' || s[sp] == ' ')
+		sp++;
+	while (s[size - 1] == '\t' || s[size - 1] == '\n' || s[size - 1] == ' ')
+		size--;
+	size = size - sp;
+	if (&s[sp] > &s[size - 1])
+		return (ft_strdup("\0"));
+	if ((str = (unsigned char*)ft_strnew(sizeof(char) * (size))))
+	{
+		f = str;
+		while (size-- != 0)
+			*str++ = (unsigned char)*(sp + (s++));
+		return ((char*)f);
+	}
+	return (NULL);
 }

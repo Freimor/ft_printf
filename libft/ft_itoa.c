@@ -3,54 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 18:32:07 by pbondoer          #+#    #+#             */
-/*   Updated: 2015/12/03 23:29:54 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/09/12 16:22:17 by atammie           #+#    #+#             */
+/*   Updated: 2019/09/19 22:14:56 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <string.h>
 
-static size_t	digit_count(long n)
+static void		rec_num(int nb, char *f)
 {
-	size_t i;
+	int	k;
 
-	i = 1;
-	if (n < 0)
-		n = -n;
-	while (n >= 10)
-	{
-		i++;
-		n /= 10;
-	}
-	return (i);
+	if (nb / 10 != 0)
+		rec_num(nb / 10, f - 1);
+	k = nb % 10;
+	if (k < 0)
+		k = -k;
+	*f = k + '0';
 }
 
 char			*ft_itoa(int n)
 {
-	long	v;
-	size_t	count;
-	char	*str;
-	char	neg;
+	char	*nbr;
+	int		kk;
+	size_t	len;
 
-	v = n;
-	neg = (v < 0 ? 1 : 0);
-	count = digit_count(v);
-	str = ft_strnew(count + neg);
-	if (str == NULL)
-		return (NULL);
-	if (neg)
+	kk = n;
+	len = 0;
+	while (kk != 0)
 	{
-		v = -v;
-		str[0] = '-';
+		len++;
+		kk = kk / 10;
 	}
-	while (count > 0)
+	if (n <= 0)
+		len++;
+	if ((nbr = (char*)ft_memalloc(sizeof(char) * (len + 1))))
 	{
-		str[count + neg - 1] = (v % 10) + '0';
-		count--;
-		v /= 10;
+		nbr[len] = '\0';
+		if (n < 0)
+			nbr[0] = '-';
+		rec_num(n, nbr + len - 1);
+		return (nbr);
 	}
-	return (str);
+	return (NULL);
 }

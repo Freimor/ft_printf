@@ -3,32 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rick <rick@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 00:32:11 by pbondoer          #+#    #+#             */
-/*   Updated: 2016/01/08 01:30:00 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/09/10 21:42:42 by atammie           #+#    #+#             */
+/*   Updated: 2020/05/24 17:16:16 by rick             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <string.h>
 
-char	*ft_strnstr(const char *s1, const char *s2, size_t n)
+char	*ft_strnstr(const char *str, const char *to_find, size_t len)
 {
-	size_t i;
-	size_t j;
+	size_t	size;
 
-	if (*s2 == '\0')
-		return ((char *)s1);
-	i = 0;
-	while (s1[i] && i < n)
+	if (ft_strlen(str))
 	{
-		j = 0;
-		while (s1[i + j] && i + j < n && s2[j] && s1[i + j] == s2[j])
-			j++;
-		if (s2[j] == '\0')
-			return ((char *)(s1 + i));
-		i++;
+		if (!*to_find)
+			return ((char*)str);
+		if (!len || ft_strlen(to_find) > len)
+			return (NULL);
+		size = ft_strlen(to_find);
+		while (*str != '\0' && len)
+		{
+			if (ft_strncmp(str, to_find, size) == 0)
+				return ((char*)str);
+			if (size >= len)
+				return (NULL);
+			str++;
+			len--;
+		}
 	}
 	return (NULL);
 }

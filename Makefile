@@ -1,45 +1,97 @@
-NAME	= ft_printf
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: rick <rick@student.42.fr>                  +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/08/08 22:55:30 by ojessi            #+#    #+#              #
+#    Updated: 2020/06/03 18:20:18 by rick             ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# src / obj files
-SRC		=	ft_printf.c c_type.c\
+.PHONY: all, clean, fclean, re
 
-OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
+NAME = test
 
-# compiler
-CC		= gcc
-CFLAGS	=  -g
+ID = $(shell id -un)
+CC =	gcc
+FLAGS =	-g # -Wall -Wextra -Werror
+LIBRARIES =	-L $(LIBFT_DIR) -lft
+INCLUDES =	-I $(HEADERS_DIR) -I $(LIBFT_HEADERS)
 
-# ft library
-FT		= ./libft/
-FT_LIB	= $(addprefix $(FT),libft.a)
-FT_INC	= -I ./libft
-FT_LNK	= -L ./libft -l ft
+# LIBFT
+LIBFT_DIR =	./libft
+#LIBFT =		$(LIBFT_DIR)libft.a
+LIBFT = ./libft/libft.a
+LIBFT_HEADERS =	$(LIBFT_DIR)
 
-# directories
-SRCDIR	= ./src/
-INCDIR	= ./include/
-OBJDIR	= ./obj/
+#HEADERS
+HEADERS_LIST =	ft_printf.h
+HEADERS_DIR =	./includes/
+HEADERS = $(addprefix $(HEADERS_DIR), $(HEADERS_LIST))
 
-all: obj $(FT_LIB) $(NAME)
+#SOURCES
+SRC_DIR =	./srcs/
 
-obj:
-	mkdir -p $(OBJDIR)
+SRC_LIST =	f1.c \
+			f2.c \
+			flags.c \
+			initialization.c \
+			main.c \
+			mods.c \
+			precision.c \
+			print_values.c \
+			types_csp.c \
+			types_dioux.c \
+			width.c \
+			test.c \
+			utils.c \
 
-$(OBJDIR)%.o:$(SRCDIR)%.c
-	$(CC) $(CFLAGS) $(MLX_INC) $(FT_INC) -I $(INCDIR) -o $@ -c $<
+SRC = $(addprefix $(SRC_DIR), $(SRC_LIST))
 
-$(FT_LIB):
-	make -C $(FT)
+#OBJECTS
+OBJ_DIR = obj/
+OBJ_L = $(patsubst %.c, %.o, $(SRC_LIST))
+OBJ = $(addprefix $(OBJ_DIR), $(OBJ_L))
 
-$(NAME): $(OBJ)
-	$(CC) $(OBJ) $(MLX_LNK) $(FT_LNK) -lm -o $(NAME)
+# COLORS
+
+GREEN =	\033[0;32m
+RED =	\033[0;31m
+RESET =	\033[0m
+
+all: $(NAME)
+
+$(NAME): $(LIBFT) $(OBJ_DIR) $(OBJ)
+	@$(CC) -o $(NAME) $(FLAGS) $(INCLUDES) $(OBJ) $(LIBRARIES)
+	@echo "\n$(NAME): $(GREEN)$(NAME) object files were created$(RESET)"
+	@echo "$(NAME): $(GREEN)$(NAME) was created$(RESET)"
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+	@echo "$(NAME): $(GREEN)$(OBJ_DIR) was created$(RESET)"
+
+$(OBJ_DIR)%.o : $(SRC_DIR)%.c $(HEADERS)
+	@$(CC) $(FLAGS) -c $(INCLUDES) $< -o $@
+	@echo "$(GREEN).$(RESET)\c"
+
+$(LIBFT):
+	@echo "$(NAME): $(GREEN)creating $(LIBFT)...$(RESET)"
+	@make -C $(LIBFT_DIR)
 
 clean:
-	rm -rf $(OBJDIR)
-	make -C $(FT) clean
+	@make -C $(LIBFT_DIR) clean
+	@rm -rf $(OBJ_DIR)
+	@echo "$(NAME): $(RED)$(OBJ_DIR) was deleted$(RESET)"
+	@echo "$(NAME): $(RED)object files were deleted$(RESET)"
 
 fclean: clean
-	rm -rf $(NAME)
-	make -C $(FT) fclean
+	@rm -f $(LIBFT)
+	@echo "$(NAME): $(RED)$(LIBFT) was deleted$(RESET)"
+	@rm -f $(NAME)
+	@echo "$(NAME): $(RED)$(NAME) was deleted$(RESET)"
 
-re: fclean all
+re:
+	@make fclean
+	@make all

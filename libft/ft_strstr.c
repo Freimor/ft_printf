@@ -3,35 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 00:41:10 by pbondoer          #+#    #+#             */
-/*   Updated: 2016/01/08 01:31:01 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/08/05 21:07:42 by atammie           #+#    #+#             */
+/*   Updated: 2019/09/20 17:38:51 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <string.h>
 
-char	*ft_strstr(const char *s1, const char *s2)
+char	*ft_strstr(const char *str, const char *to_find)
 {
-	char *a;
-	char *b;
+	size_t	len;
 
-	if (*s2 == '\0')
-		return ((char *)s1);
-	while (*s1)
+	if (!*to_find)
+		return ((char*)str);
+	len = ft_strlen(to_find);
+	while (*str)
 	{
-		a = (char *)s1;
-		b = (char *)s2;
-		while (*b && *a == *b)
-		{
-			a++;
-			b++;
-		}
-		if (*b == '\0')
-			return ((char *)s1);
-		s1++;
+		if (ft_strncmp(str, to_find, len) == 0)
+			return ((char *)str);
+		str++;
 	}
 	return (NULL);
 }

@@ -3,30 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 01:05:06 by pbondoer          #+#    #+#             */
-/*   Updated: 2016/01/08 01:47:30 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/08/05 15:14:36 by atammie           #+#    #+#             */
+/*   Updated: 2019/09/19 13:20:04 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_atoi(const char *str)
+int		ft_atoi(const char *str)
 {
-	int		nbr;
-	char	neg;
+	int					sign;
+	unsigned long long	num;
+	unsigned long long	maxlong;
+	unsigned long long	minlong;
 
-	while (ft_iswhitespace(*str))
+	minlong = 9223372036854775808ULL;
+	maxlong = 9223372036854775807ULL;
+	num = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))
 		str++;
-	neg = (*str == '-');
-	if (*str == '-' || *str == '+')
-		str++;
-	nbr = 0;
-	while (ft_isdigit(*str))
+	if (*str == '-')
 	{
-		nbr = nbr * 10 + (*str - '0');
+		sign = -1;
 		str++;
 	}
-	return (neg ? -nbr : nbr);
+	else if (*str == '+')
+		str++;
+	while (*str >= '0' && *str <= '9' && *str)
+		num = num * 10 + (*(str++) - '0') * sign;
+	if (num < minlong && sign == -1)
+		return (0);
+	if (num > maxlong && sign == 1)
+		return (-1);
+	return (num);
 }

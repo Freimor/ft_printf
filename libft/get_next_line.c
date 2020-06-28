@@ -3,135 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/16 19:11:50 by pbondoer          #+#    #+#             */
-/*   Updated: 2016/02/21 16:48:17 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/09/23 15:26:28 by atammie           #+#    #+#             */
+/*   Updated: 2019/10/07 18:38:14 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "get_next_line.h"
-#include <unistd.h>
+#include <stdio.h>
 
-char	*get_append(t_gnl *gnl)
+static int	push_line(char **s, char **line)
 {
-	int i;
+	size_t	len;
+	char	*tmp;
+	char	*ptr;
 
-	i = 0;
-	gnl->nl = 0;
-	while (gnl->i + i < gnl->count)
+	if (**s == 0)
+		return (0);
+	ptr = *s;
+	len = 0;
+	while (*ptr != '\n' && *ptr != 0)
 	{
-		if (gnl->buf[gnl->i + i] == '\n')
-		{
-			gnl->nl = 1;
-			i++;
-			break ;
-		}
-		i++;
+		len++;
+		ptr++;
 	}
-	gnl->i += i;
-	return (ft_strsub(gnl->buf, gnl->i - i, i - gnl->nl));
-}
-
-t_gnl	*get_gnl(t_list **lst, int fd)
-{
-	t_gnl	*gnl;
-	t_list	*temp;
-
-	temp = *lst;
-	while (temp)
-	{
-		gnl = (t_gnl *)(temp->content);
-		if (gnl->fd == fd)
-			return (gnl);
-		temp = temp->next;
-	}
-	gnl = (t_gnl *)ft_memalloc(sizeof(t_gnl));
-	gnl->buf = ft_strnew(BUFF_SIZE);
-	gnl->count = BUFF_SIZE;
-	gnl->i = BUFF_SIZE;
-	gnl->fd = fd;
-	gnl->nl = 1;
-	temp = ft_lstnew(gnl, sizeof(t_gnl));
-	ft_memdel((void **)&gnl);
-	ft_lstadd(lst, temp);
-	return ((t_gnl *)(temp->content));
-}
-
-void	del_gnl(t_list **lst, int fd, char **str)
-{
-	t_gnl	*gnl;
-	t_list	**temp;
-	t_list	*ptr;
-
-	temp = lst;
-	while (*temp)
-	{
-		gnl = (t_gnl *)((*temp)->content);
-		if (gnl->fd == fd)
-			break ;
-		*temp = ((*temp)->next);
-	}
-	if (*temp)
-	{
-		ptr = (*temp)->next;
-		ft_strdel(&(gnl->buf));
-		ft_memdel((void **)&gnl);
-		ft_memdel((void **)temp);
-		*temp = ptr;
-	}
-	ft_strdel(str);
-}
-
-int		read_buffer(t_gnl *gnl, t_list **lst, char **temp, char **line)
-{
-	if (gnl->i == gnl->count)
-	{
-		gnl->count = read(gnl->fd, gnl->buf, BUFF_SIZE);
-		if (gnl->count == -1)
-		{
-			del_gnl(lst, gnl->fd, temp);
-			return (-1);
-		}
-		gnl->i = 0;
-		if (gnl->count == 0)
-		{
-			if (gnl->nl == 0)
-			{
-				*line = *temp;
-				return (1);
-			}
-		}
-	}
-	return (0);
-}
-
-int		get_next_line(int const fd, char **line)
-{
-	static t_list	*lst;
-	t_gnl			*gnl;
-	char			*temp;
-	int				ret;
-
-	if (fd < 0 || line == NULL)
+	if (!(*line = ft_memcpy(ft_strnew(len), *s, len)))
 		return (-1);
-	gnl = get_gnl(&lst, fd);
-	temp = ft_strnew(0);
-	while (gnl->count > 0)
+	if (*ptr == 0)
+		tmp = ft_strdup("");
+	else
 	{
-		if ((ret = read_buffer(gnl, &lst, &temp, line)) != 0)
-			return (ret);
-		while (gnl->i < gnl->count)
-		{
-			temp = ft_strmerge(temp, get_append(gnl));
-			if (gnl->nl)
-			{
-				*line = temp;
-				return (1);
-			}
-		}
+		if (!(tmp = ft_strdup(ptr + 1)))
+			return (-1);
 	}
-	del_gnl(&lst, fd, &temp);
-	return (0);
+	free(*s);
+	*s = tmp;
+	return (1);
+}
+
+int			get_next_line(const int fd, char **line)
+{
+	char		buf[BUFF_SIZE + 1];
+	int			red;
+	static char	*s[10240];
+	char		*tmp;
+
+	red = 0;
+	if (fd < 0)
+		return (-1);
+	while ((red = read(fd, buf, BUFF_SIZE)) > 0)
+	{
+		buf[red] = '\0';
+		if (s[fd] == NULL)
+			if (!(s[fd] = ft_strnew(BUFF_SIZE)))
+				return (-1);
+		if (!(tmp = ft_strjoin(s[fd], buf)))
+			return (-1);
+		free(s[fd]);
+		s[fd] = tmp;
+		if (ft_strchr(buf, '\n') != 0)
+			break ;
+	}
+	if (red < 0)
+		return (-1);
+	return (push_line((&s[fd]), line));
 }

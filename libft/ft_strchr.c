@@ -3,24 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pbondoer <pbondoer@student.42.fr>          +#+  +:+       +#+        */
+/*   By: atammie <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2015/12/02 00:15:37 by pbondoer          #+#    #+#             */
-/*   Updated: 2016/01/08 00:48:52 by pbondoer         ###   ########.fr       */
+/*   Created: 2019/09/10 20:15:31 by atammie           #+#    #+#             */
+/*   Updated: 2019/09/19 21:15:18 by atammie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "string.h"
+#include "libft.h"
 
 char	*ft_strchr(const char *s, int c)
 {
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if ((char)c == '\0')
-		return ((char *)s);
-	return (NULL);
+	return ((char*)ft_memchr(s, c, ft_strlen((char*)s) + 1));
 }
