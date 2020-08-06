@@ -29,12 +29,12 @@ uint64_t	ft_pow(uint64_t base, uint64_t step)
 	return (num);
 }
 
-int 	*init_masse()
+uint64_t 	*init_masse()
 {
 	return(ft_memalloc(sizeof(uint64_t) * SIZE));
 }
 
-void	bigint_firstcut(uint64_t *masse, uint64_t num)	//первое наполнение массива
+/*void	bigint_firstcut(uint64_t *masse, uint64_t num)	//первое наполнение массива
 {
 	int	i;
 
@@ -45,6 +45,46 @@ void	bigint_firstcut(uint64_t *masse, uint64_t num)	//первое наполн�
 		num /= BASE;
 		i++;
 	}
+}*/
+
+void	bigint_num2longmasse(uint64_t *masse, uint64_t num)
+{
+	int i;
+
+	i = 0;
+	while (num != 0 && i < SIZE - 1)
+	{
+		masse[i + 1] = num % BASE;
+		num /= BASE;
+		i++;
+		masse[0]++;
+	}
+}
+
+uint64_t	*mul_l(uint64_t *buf1, uint64_t *buf2, uint64_t *res)
+{
+	unsigned long long	c;
+	unsigned			i;
+	unsigned			j;
+	unsigned			maxlen;
+
+	res[0] = buf1[0] + buf2[0];
+	maxlen = res[0];
+	i = 1;
+	while (i < maxlen)
+	{
+		c = 0;
+		j = 1;
+		while (j < maxlen)
+		{
+			c = c + buf1[j] * buf2[i] + res[j];
+			res[j] = c % BASE;
+			c = c / BASE;
+			j++;
+		}
+		i++;
+	}
+	return (res);
 }
 
 void	bigint_sum(uint64_t *masse, uint64_t *othermasse)
@@ -97,7 +137,7 @@ void	bigint_sum(uint64_t *masse, uint64_t *othermasse)
 	return (result);
 }*/
 
-void	bigint_multi(uint64_t *masse, uint64_t num)	//попробовать переписать на использование bigint_sum
+void	bigint_multi(uint64_t *masse, uint64_t num)
 {
 	uint64_t	c;
 	int	i;
@@ -121,36 +161,38 @@ void	bigint_multi(uint64_t *masse, uint64_t num)	//попробовать пер
 
 int	main(void)
 {
-	long double num = -1;
+	long double num = 10;
 
 
 	union_ldouble	*number;
 	uint64_t		*masse;
 	uint64_t		*othermasse;
-	int				*result;
+	uint64_t		*resultmasse;
+	//int				*result;
 
 	number = ft_memalloc(sizeof(union_ldouble));
 	masse = init_masse();
 	othermasse = init_masse();
+	resultmasse = init_masse();
 
 	number->d = num;
 
-	bigint_firstcut(masse, number->bits.mantissa);
+	bigint_num2longmasse(masse, number->bits.mantissa);
 
 	if (number->bits.exponent - 16383 - 63 < 0)
 	{
-		bigint_firstcut(othermasse, ft_pow(5, 16383 + 63 - number->bits.exponent));
-		result = bigint_multi(masse, othermasse);
+		bigint_num2longmasse(othermasse, ft_pow(5, 16383 + 63 - number->bits.exponent));
+		resultmasse = mul_l(masse, othermasse, resultmasse);
 	}
 	else if (number->bits.exponent - 16383 - 63 >= 0)
 	{
-		bigint_firstcut(othermasse, ft_pow(2, number->bits.exponent - 16383 - 63));
-		result = bigint_multi(masse, othermasse);
+		bigint_num2longmasse(othermasse, ft_pow(2, number->bits.exponent - 16383 - 63));
+		resultmasse = mul_l(masse, othermasse, resultmasse);
 	}
 	int i = 0;
-	while (i <= SIZE)
+	while (i <= resultmasse[0])
 	{
-		printf("%d ", result[SIZE - i]);
+		printf("%llu ", resultmasse[i]);
 		i++;
 	}
 	return (0);
